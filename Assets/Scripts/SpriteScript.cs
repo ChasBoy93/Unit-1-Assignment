@@ -56,12 +56,18 @@ public class SpriteScript : MonoBehaviour
             sr.flipX = true;
         }
 
+        else
+        {
+            rb.velocity = new Vector2(0f, rb.velocity.y);
+        }
+
         if (Input.GetKey("right") == true)
         {
             rb.velocity = new Vector2(3f, rb.velocity.y);
             animator.SetBool("Walk", true);
             sr.flipX = false;
         }
+
     }
     void SpriteJump()
     {
@@ -178,6 +184,7 @@ public class SpriteScript : MonoBehaviour
     {
        if(other.gameObject.CompareTag("Collectable"))
         {
+            Destroy(other.gameObject);
             collect.collectCount++;
         }
     }

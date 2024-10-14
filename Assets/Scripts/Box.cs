@@ -10,7 +10,7 @@ public class Box : MonoBehaviour
     public Transform respawnPoint;
     public GameObject player;
 
-    // Start is called before the first frame update
+    
     void Start()
     {
         health = maxHealth;
