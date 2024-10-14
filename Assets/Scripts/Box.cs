@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Box : MonoBehaviour
 {
-    public int maxHealth = 300;
+    public int maxHealth = 200;
     public int health;
+    public GameObject collectableObject;
     public Transform respawnPoint;
     public GameObject player;
 
@@ -34,6 +35,7 @@ public class Box : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            collectableObject.SetActive(true);
         }
     }
 
