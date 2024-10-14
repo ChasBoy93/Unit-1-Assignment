@@ -47,15 +47,14 @@ public class SpriteScript : MonoBehaviour
     {
         animator.SetBool("Walk", false);
         animator.SetFloat("yVelocity", rb.velocity.y);
-        
+
 
         if (Input.GetKey("left") == true)
         {
             rb.velocity = new Vector2(-3f, rb.velocity.y);
             animator.SetBool("Walk", true);
             sr.flipX = true;
-        }
-
+        } 
         else
         {
             rb.velocity = new Vector2(0f, rb.velocity.y);
@@ -67,6 +66,7 @@ public class SpriteScript : MonoBehaviour
             animator.SetBool("Walk", true);
             sr.flipX = false;
         }
+
 
     }
     void SpriteJump()
