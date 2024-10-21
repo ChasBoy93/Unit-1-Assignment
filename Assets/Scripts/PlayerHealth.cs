@@ -15,10 +15,11 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        currentHealth -= damage;
+            currentHealth -= damage;
 
 
-        if (currentHealth < 0)
+
+        if (currentHealth <= 0)
         {
             Die();
         }
@@ -27,7 +28,6 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
 
-        GetComponent<Collider2D>().enabled = false;
-        this.enabled = false;
+        Destroy(gameObject);
     }
 }

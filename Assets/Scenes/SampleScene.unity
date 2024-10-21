@@ -3372,7 +3372,7 @@ MonoBehaviour:
   destroyLayer:
     serializedVersion: 2
     m_Bits: 128
-  attackDamage: 1
+  attackDamage: 3
   enemyLayers:
     serializedVersion: 2
     m_Bits: 128
@@ -10936,7 +10936,7 @@ MonoBehaviour:
   attackPoint: {fileID: 2144399968}
   destroyLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 256
   attackDamage: 20
   groundLayer:
     serializedVersion: 2
