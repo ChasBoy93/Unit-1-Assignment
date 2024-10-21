@@ -11,12 +11,16 @@ public class Enemy_behaviour : MonoBehaviour
     public float attackDistance;
     public float moveSpeed;
     public float timer;
-    public Transform leftLimit;
-    public Transform rightLimit;
+    public float attackRange = 0.5f;
+    public Transform attackPoint;
+    public LayerMask destroyLayer;
+    public int attackDamage = 20;
+    public LayerMask enemyLayers;
+
 
     //Private Variables
     private RaycastHit2D hit;
-    private Transform target;
+    private GameObject target;
     private Animator anim;
     private float distance;
     private bool attackMode;
@@ -24,32 +28,24 @@ public class Enemy_behaviour : MonoBehaviour
     private bool cooling;
     private float intTimer;
 
+    Health health;
+    PlayerHealth playerHealth;
     void Awake()
     {
         intTimer = timer;
+        //health = gameObject.AddComponent<Health>();
         anim = GetComponent<Animator>();
     }
 
-
     void Update()
     {
-        if(!attackMode)
-        {
-            Move();
-        }
-
-        if(!InsideLimit() && !inRange && !anim.GetCurrentAnimatorStateInfo(0).IsName("Enemy_Attack"))
-        {
-            SelectTarget();
-        }
-
         if(inRange)
         {
-            hit = Physics2D.Raycast(raycast.position, transform.right, raycastLength, raycastMask);
+            hit = Physics2D.Raycast(raycast.position, Vector2.left, raycastLength);
             RaycastDebug();
         }
-        
-        //When player is detected
+
+        //When Player is Detected
         if(hit.collider != null)
         {
             EnemyLogic();
@@ -70,27 +66,28 @@ public class Enemy_behaviour : MonoBehaviour
     {
         if(trigger.gameObject.tag == "Player")
         {
-            target = trigger.transform;
+            target = trigger.gameObject;
             inRange = true;
         }
     }
 
     void EnemyLogic()
     {
-        distance = Vector2.Distance(transform.position, target.position);
+        distance = Vector2.Distance(transform.position, target.transform.position);
 
-        if(distance > attackDistance)
+        if (distance > attackDistance)
         {
+            Move();
             StopAttack();
         }
-        else if(attackDistance >= distance && cooling == false)
+        else if (attackDistance >= distance && cooling == false)
         {
             Attack();
         }
 
-        if(cooling)
+        if (cooling)
         {
-            CoolDown();
+            Cooldown();
             anim.SetBool("IsAttacking", false);
         }
     }
@@ -98,10 +95,9 @@ public class Enemy_behaviour : MonoBehaviour
     void Move()
     {
         anim.SetBool("Walk", true);
-        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Enemy_Attack"))
+        if(!anim.GetCurrentAnimatorStateInfo(0).IsName("Enemy_Attack"))
         {
-            Vector2 targetPosition = new Vector2(target.position.x, transform.position.y);
-
+            Vector2 targetPosition = new Vector2(target.transform.position.x, transform.position.y);
             transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
         }
     }
@@ -110,11 +106,19 @@ public class Enemy_behaviour : MonoBehaviour
     {
         timer = intTimer;
         attackMode = true;
+
         anim.SetBool("Walk", false);
         anim.SetBool("IsAttacking", true);
+
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
+
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            enemy.GetComponent<PlayerHealth>().TakeDamage(attackDamage);
+        }
     }
 
-    void CoolDown()
+    void Cooldown()
     {
         timer -= Time.deltaTime;
 
@@ -129,50 +133,23 @@ public class Enemy_behaviour : MonoBehaviour
     {
         cooling = false;
         attackMode = false;
-        anim.SetBool("IsAttacking", false);
-    }
-
-    public void TriggerCooling()
-    { 
-       cooling = true; 
-    }
-
-    private bool InsideLimit()
-    {
-        return transform.position.x > leftLimit.position.x && transform.position.x < rightLimit.position.x;
-    }
-
-    private void SelectTarget()
-    {
-        float distanceToLeft = Vector2.Distance(transform.position, leftLimit.position);
-        float distanceToRight = Vector2.Distance(transform.position, rightLimit.position);
-
-        if(distanceToLeft > distanceToRight)
-        {
-            target = leftLimit;
-        }
-        else
-        {
-            target = rightLimit;
-        }
-
-        Flip();
-    }
-
-    private void Flip()
-    {
-        
+        anim.SetBool("IsAttacking", false );
     }
 
     void RaycastDebug()
     {
         if(distance > attackDistance)
         {
-            Debug.DrawRay(raycast.position, transform.right * raycastLength, Color.red);
+            Debug.DrawRay(raycast.position, Vector2.left * raycastLength, Color.red);
         }
-        else if(attackDistance > distance)
+        else if(attackDistance < distance)
         {
-            Debug.DrawRay(raycast.position, transform.right * raycastLength, Color.green);
+            Debug.DrawRay(raycast.position, Vector2.left * raycastLength, Color.green);
         }
+    }
+
+    public void TriggerCooling()
+    {
+        cooling = true;
     }
 }

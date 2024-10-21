@@ -11,11 +11,14 @@ public class SpriteScript : MonoBehaviour
     bool isGrounded;
     bool isJumping;
     public Transform attackPoint;
-    public float attackRange = 0.5f;
     public LayerMask destroyLayer;
-    public int attackDamage = 20;
+    public int attackDamage = 40;
     public LayerMask groundLayer;
     Helper helperScript;
+    public float attackRange = 0.5f;
+    public LayerMask enemyLayers;
+    Health health;
+    Box box;
 
     public CollectObject collect;
 
@@ -25,6 +28,8 @@ public class SpriteScript : MonoBehaviour
         animator = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
         helperScript = gameObject.AddComponent<Helper>();
+
+        //health = gameObject.AddComponent<Health>();
     }
 
 
@@ -104,25 +109,15 @@ public class SpriteScript : MonoBehaviour
         {
             animator.SetBool("IsAttacking", true);
 
-            Collider2D[] hitEnemy =  Physics2D.OverlapCircleAll(attackPoint.position, attackRange, destroyLayer);
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
 
-            foreach(Collider2D enemy in hitEnemy)
+            foreach(Collider2D enemy in hitEnemies)
             {
-                enemy.GetComponent<Box>().TakeDamage(attackDamage);
+                enemy.GetComponent<Health>().TakeDamage(attackDamage);
             }
-
         }
-
-        
     }
 
-    void OnDrawGizmosSelected()
-    {
-        if (attackPoint == null)
-            return;
-
-        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
-    }
 
     void SpriteFall()
     {
