@@ -7,6 +7,7 @@ public class Health : MonoBehaviour
     public int maxHealth = 100;
     int currentHealth;
     public Animator animator;
+    public GameObject endText;
 
     void Start()
     {
@@ -21,6 +22,7 @@ public class Health : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            endText.SetActive(true);
             animator.SetBool("IsAttacking", false);
             Die();
         }
@@ -32,7 +34,13 @@ public class Health : MonoBehaviour
         animator.SetBool("IsDead", true);
 
         Destroy(gameObject, 4);
-        // GetComponent<Collider2D>().enabled = false;
-        //this.enabled = false;
+
+        StartCoroutine(TextDelay());
+    }
+
+    private IEnumerator TextDelay()
+    {
+        yield return new WaitForSeconds(3);
+        endText.SetActive(false);
     }
 }

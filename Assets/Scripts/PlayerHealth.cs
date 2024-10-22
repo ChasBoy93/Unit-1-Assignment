@@ -7,6 +7,7 @@ public class PlayerHealth : MonoBehaviour
     public int maxHealth = 100;
     int currentHealth;
     public Animator animator;
+    public GameObject endText;
 
     void Start()
     {
@@ -27,7 +28,13 @@ public class PlayerHealth : MonoBehaviour
 
     void Die()
     {
-
+        StartCoroutine(TextDelay());
         Destroy(gameObject);
+    }
+
+    private IEnumerator TextDelay()
+    {
+        yield return new WaitForSeconds(3);
+        endText.SetActive(false);
     }
 }
