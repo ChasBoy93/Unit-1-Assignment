@@ -16,8 +16,13 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        StartCoroutine(KillDelay());
+            
+        IEnumerator KillDelay()
+        {
+            yield return new WaitForSeconds(3);
             currentHealth -= damage;
-
+        }
 
 
         if (currentHealth <= 0)
@@ -32,9 +37,11 @@ public class PlayerHealth : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private IEnumerator TextDelay()
+    public IEnumerator TextDelay()
     {
         yield return new WaitForSeconds(3);
         endText.SetActive(false);
     }
+
+
 }
