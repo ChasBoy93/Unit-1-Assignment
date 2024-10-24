@@ -16,6 +16,7 @@ public class Enemy_behaviour : MonoBehaviour
     public LayerMask destroyLayer;
     public int attackDamage = 20;
     public LayerMask enemyLayers;
+    public GameObject player;
 
 
     //Private Variables
@@ -30,6 +31,7 @@ public class Enemy_behaviour : MonoBehaviour
 
     Health health;
     PlayerHealth playerHealth;
+    SpriteRenderer sr;
     void Awake()
     {
         intTimer = timer;
@@ -94,11 +96,23 @@ public class Enemy_behaviour : MonoBehaviour
 
     void Move()
     {
+        float x = player.transform.position.x;
+        float px = player.transform.position.x;
+        float ex = transform.position.x;
         anim.SetBool("Walk", true);
         if(!anim.GetCurrentAnimatorStateInfo(0).IsName("Enemy_Attack"))
         {
             Vector2 targetPosition = new Vector2(target.transform.position.x, transform.position.y);
             transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+        }
+
+        if (ex < px)
+        {
+            sr.flipX = true;
+        }
+        else
+        {
+            sr.flipX = false;
         }
     }
 
